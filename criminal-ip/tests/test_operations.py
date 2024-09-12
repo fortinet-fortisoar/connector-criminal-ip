@@ -1,9 +1,8 @@
 # Edit the config_and_params.json file and add the necessary parameter values.
 """
 Copyright start
-Copyright (C) 2008 - 2024 Fortinet Inc.
-All rights reserved.
-FORTINET CONFIDENTIAL & FORTINET PROPRIETARY SOURCE CODE
+MIT License
+Copyright (c) 2024 Fortinet Inc
 Copyright end
 """
 
