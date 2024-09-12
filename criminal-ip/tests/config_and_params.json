@@ -1,0 +1,38 @@
+{
+    "config": [
+        {
+            "server_url": "https://api.criminalip.io",
+            "api_key": "Required_password",
+            "verify_ssl": true,
+            "config_id": "Required when storing tokens in config. Find the ID here: http://127.0.0.1:8000/integration/connectors/",
+            "connector_info": {
+                "connector_name": "criminal-ip",
+                "connector_version": "1.0.0"
+            }
+        }
+    ],
+    "get_url_reputation": [
+        {
+            "query": "Required_text"
+        }
+    ],
+    "get_ip_reputation": [
+        {
+            "query": "Required_text"
+        }
+    ],
+    "get_domain_reputation": [
+        {
+            "query": "Required_text"
+        }
+    ],
+    "invalid_params": {
+        "text": "1234567890!@#$%^&*()_+qwertyuioplkjhgfdsazxcvbnm?/.,>~<;'|[]{}:`",
+        "textarea": "1234567890!@#$%^&*()_+qwertyuioplkjhgfdsazxcvbnm?/.,>~<;'|[]{}:`",
+        "password": "*******",
+        "integer": -123,
+        "json": {
+            "KEY": "V@|U{"
+        }
+    }
+}
