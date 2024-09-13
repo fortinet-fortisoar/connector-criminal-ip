@@ -59,9 +59,11 @@ def get_domain_reputation(config, params):
     response = make_api_call(method='POST', endpoint=endpoint, data=params, config=config)
     data = response.get('data')
     retries = 0
-    max_retries = 6
+    max_retries = 10
     retry_delay = 15
     while not data and retries < max_retries:
+        if retries == 9:
+            raise ConnectorError('Failed to get the data from Criminal IP')
         retries += 1
         time.sleep(retry_delay)
         response = make_api_call(method='POST', endpoint=endpoint, data=params, config=config)
