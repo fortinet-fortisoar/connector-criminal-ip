@@ -58,8 +58,12 @@ def get_domain_reputation(config, params):
     endpoint = "/v1/domain/scan"
     response = make_api_call(method='POST', endpoint=endpoint, data=params, config=config)
     data = response.get('data')
-    while not data:
-        time.sleep(15)
+    retries = 0
+    max_retries = 6
+    retry_delay = 15
+    while not data and retries < max_retries:
+        retries += 1
+        time.sleep(retry_delay)
         response = make_api_call(method='POST', endpoint=endpoint, data=params, config=config)
         data = response.get('data')
     scan_id = response.get('data').get('scan_id')
