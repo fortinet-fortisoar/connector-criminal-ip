@@ -1,0 +1,1052 @@
+{
+  "type": "workflow_collections",
+  "data": [
+    {
+      "@context": "/api/3/contexts/WorkflowCollection",
+      "@type": "WorkflowCollection",
+      "name": "Sample - Criminal IP - 1.0.0",
+      "description": "Sample playbooks for \"Criminal IP\" connector. If you are planning to use any of the sample playbooks in your environment, ensure that you clone those playbooks and move them to a different collection, since the sample playbook collection gets deleted during connector upgrade and delete.",
+      "visible": true,
+      "image": null,
+      "id": 159,
+      "createDate": 1722524582.408941,
+      "modifyDate": 1722524582.408941,
+      "deletedAt": null,
+      "importedBy": [],
+      "recordTags": [
+        "Criminal IP",
+        "criminal-ip"
+      ],
+      "workflows": [
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "IP Address > Criminal IP > Enrichment",
+          "aliasName": null,
+          "tag": "#Criminal IP",
+          "description": "Retrieve the reputation of indicator of type ‘IP Address’ using Criminal IP",
+          "isActive": true,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [
+            "indicator_value",
+            "style_colors"
+          ],
+          "synchronous": false,
+          "lastModifyDate": 1722530144,
+          "collection": "/api/3/workflow_collections/6e386fdd-c004-452e-af65-af89545eddc4",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/1f2db699-a95c-4180-a6f9-93ea02eaf96b",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Compute Enrichment Summary",
+              "description": null,
+              "arguments": {
+                "params": {
+                  "value": "<table class=\"no-border\">\n    <tr>\n        <th colspan=\"5\" class=\"no-background padding-0\">\n            <div class=\"font-size-11 ng-binding padding-bottom-sm\">\n                <h4 style=\"color: orange;\"\n                    class=\"body-default-bgcolor margin-bottom-0 padding-bottom-md padding-left-md padding-top-md text-align-left\">\n                    Criminal IP Detection Summary</h4>\n            </div>\n        </th>\n    </tr>\n    <tr class=\"solid-border\">\n        <td>\n            <div small class=\"control-label\">Malicious Confidence</div>\n            <div class=\"card-container-body margin-left-0\" style=\"width: 100px;\">\n                <div>{% if vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] == vars.malicious_score %}</div>\n                <div class=\"body-default-bgcolor card-number padding-left-md\"\n                    style=\"border-left: 5px solid {{vars.input.params.style_colors.Malicious}};padding: 11px;font-size: 18px !important;\">\n                    {{vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] | capitalize}}</div>\n                <div>{% elif vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] == vars.suspicious_score %}</div>\n                <div class=\"body-default-bgcolor card-number padding-left-md\"\n                    style=\"border-left: 5px solid {{vars.input.params.style_colors.Suspicious}};padding: 11px;font-size: 18px !important;\">\n                    {{vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] | capitalize}}</div>\n                <div>{% elif vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] == vars.good_score %}</div>\n                <div class=\"body-default-bgcolor card-number padding-left-md\"\n                    style=\"border-left: 5px solid {{vars.input.params.style_colors.Good}};padding: 11px;font-size: 18px !important;\">\n                    {{vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] | capitalize}}</div>\n                <div>{% else %}</div>\n                <div class=\"body-default-bgcolor card-number padding-left-md\"\n                    style=\"border-left: 5px solid {{vars.input.params.style_colors['No Reputation Available']}};padding: 11px;font-size: 18px !important;\">\n                    {{vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] | capitalize}}</div>\n                <div>{% endif %}</div>\n            </div>\n        </td>\n        <td>\n        <div small class=\"control-label\">Score Percentage</div>\n        <div class=\"card-container-body margin-left-0\" style=\"width: auto;\">\n            <div class=\"text-capitalize body-default-bgcolor card-number padding-left-md solid-border\"\n                style=\"padding: 13px;border-left-width: 1px;border-left-color: #dcdcdc;font-size: 15px !important;\">\n                {{vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score_percentage']}}</div>  \n        </div>\n        </td>\n    </tr>\n</table>\n\n"
+                },
+                "version": "3.2.5",
+                "connector": "cyops_utilities",
+                "operation": "format_richtext",
+                "operationTitle": "Utils: Format as RichText (Markdown)",
+                "step_variables": []
+              },
+              "status": null,
+              "top": "560",
+              "left": "480",
+              "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+              "group": null,
+              "uuid": "4e5b6d4d-28a3-4119-b2d2-8a6d2ddf24e3"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Configuration",
+              "description": null,
+              "arguments": {
+                "good_score": "safe",
+                "useMockOutput": "{{globalVars.Demo_mode}}",
+                "indicator_value": "{{vars.input.params['indicator_value']}}",
+                "malicious_score": "critical",
+                "suspicious_score": "low"
+              },
+              "status": null,
+              "top": "160",
+              "left": "300",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "c0801955-a009-4220-bb7b-29eb4f491063"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Get Reputation",
+              "description": null,
+              "arguments": {
+                "name": "Criminal IP",
+                "config": "47c38d97-8c43-4434-990f-412f13eaf612",
+                "params": {
+                  "query": "{{vars.input.params['indicator_value']}}"
+                },
+                "version": "1.0.0",
+                "connector": "criminal-ip",
+                "operation": "get_ip_reputation",
+                "operationTitle": "Get IP Reputation",
+                "pickFromTenant": false,
+                "step_variables": []
+              },
+              "status": null,
+              "top": "300",
+              "left": "300",
+              "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+              "group": null,
+              "uuid": "be38fd93-577a-492e-861d-eb3e8aaf5bd5"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Is Reputation Found",
+              "description": null,
+              "arguments": {
+                "conditions": [
+                  {
+                    "option": "Yes",
+                    "step_iri": "/api/3/workflow_steps/4e5b6d4d-28a3-4119-b2d2-8a6d2ddf24e3",
+                    "condition": "{{ vars.steps.Get_Reputation.data.data | length > 0 }}",
+                    "step_name": "Compute Enrichment Summary"
+                  },
+                  {
+                    "option": "No",
+                    "default": true,
+                    "step_iri": "/api/3/workflow_steps/1c928b9f-b74e-4a48-b29b-f14e07406005",
+                    "step_name": "No Operation"
+                  }
+                ],
+                "step_variables": []
+              },
+              "status": null,
+              "top": "440",
+              "left": "300",
+              "stepType": "/api/3/workflow_step_types/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+              "group": null,
+              "uuid": "078e8e26-1f25-4e15-8ba3-53f541774a40"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "No Operation",
+              "description": null,
+              "arguments": {
+                "params": [],
+                "version": "3.2.3",
+                "connector": "cyops_utilities",
+                "operation": "no_op",
+                "operationTitle": "Utils: No Operation",
+                "step_variables": []
+              },
+              "status": null,
+              "top": "560",
+              "left": "120",
+              "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+              "group": null,
+              "uuid": "1c928b9f-b74e-4a48-b29b-f14e07406005"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Return Output Data",
+              "description": null,
+              "arguments": {
+                "verdict": "{% if vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] == vars.malicious_score %}{{\"Malicious\"}}{% elif vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] == vars.suspicious_score %}{{\"Suspicious\"}}{% elif vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] == vars.good_score %}{{\"Good\"}}{% else %}{{\"No Reputation Available\"}}{% endif %}",
+                "cti_name": "CiminalIP",
+                "cti_score": "{{vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score']}}",
+                "source_data": "{\"CriminalIP\": {{vars.steps.Get_Reputation.data.data}} }",
+                "enrichment_summary": "{{vars.steps.Compute_Enrichment_Summary.data['formatted_string']}}"
+              },
+              "status": null,
+              "top": "700",
+              "left": "480",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "44bae58a-5aa8-49f3-bd1a-48667517c02e"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "__triggerLimit": true,
+                "step_variables": {
+                  "input": {
+                    "params": []
+                  }
+                },
+                "triggerOnSource": true,
+                "triggerOnReplicate": false
+              },
+              "status": null,
+              "top": "30",
+              "left": "300",
+              "stepType": "/api/3/workflow_step_types/b348f017-9a94-471f-87f8-ce88b6a7ad62",
+              "group": null,
+              "uuid": "1f2db699-a95c-4180-a6f9-93ea02eaf96b"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Compute Enrichment Summary -> Return Output Data",
+              "targetStep": "/api/3/workflow_steps/44bae58a-5aa8-49f3-bd1a-48667517c02e",
+              "sourceStep": "/api/3/workflow_steps/4e5b6d4d-28a3-4119-b2d2-8a6d2ddf24e3",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "f49ab4fe-a134-4475-b12c-81f25d992d29"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Configuration -> Get Reputation",
+              "targetStep": "/api/3/workflow_steps/be38fd93-577a-492e-861d-eb3e8aaf5bd5",
+              "sourceStep": "/api/3/workflow_steps/c0801955-a009-4220-bb7b-29eb4f491063",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "39c45ce4-58b2-4c77-98c2-1bdf688d8e1c"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Get Reputation -> Is Reputation Found",
+              "targetStep": "/api/3/workflow_steps/078e8e26-1f25-4e15-8ba3-53f541774a40",
+              "sourceStep": "/api/3/workflow_steps/be38fd93-577a-492e-861d-eb3e8aaf5bd5",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "800d4f02-2b0b-4e2d-9a87-36e2c5d1252d"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Is Reputation Found -> Compute Enrichment Summary",
+              "targetStep": "/api/3/workflow_steps/4e5b6d4d-28a3-4119-b2d2-8a6d2ddf24e3",
+              "sourceStep": "/api/3/workflow_steps/078e8e26-1f25-4e15-8ba3-53f541774a40",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "4ca27a8c-6e88-4388-80af-e0c45c8b42e2"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Is Reputation Found -> No Operation",
+              "targetStep": "/api/3/workflow_steps/1c928b9f-b74e-4a48-b29b-f14e07406005",
+              "sourceStep": "/api/3/workflow_steps/078e8e26-1f25-4e15-8ba3-53f541774a40",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "10278ffb-9f88-4e87-a6b4-352fa189be79"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Configuration",
+              "targetStep": "/api/3/workflow_steps/c0801955-a009-4220-bb7b-29eb4f491063",
+              "sourceStep": "/api/3/workflow_steps/1f2db699-a95c-4180-a6f9-93ea02eaf96b",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "bcaa260c-4696-41cf-a88b-3a77c1686cd9"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "uuid": "2f1f65ef-d09f-4a29-8cc0-ed80ccc615cf",
+          "id": 1967,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [],
+          "recordTags": [
+            "IP_Enrichment",
+            "Criminal IP",
+            "criminal-ip"
+          ]
+        },
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Get IP Reputation",
+          "aliasName": null,
+          "tag": "#Criminal IP",
+          "description": "Uploads a IP to Criminal IP and retrieves the analysis results.",
+          "isActive": false,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [],
+          "synchronous": false,
+          "lastModifyDate": 1722511843,
+          "collection": "/api/3/workflow_collections/6e386fdd-c004-452e-af65-af89545eddc4",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/a46dff6d-e0a8-4b05-9277-0005dc6c5ccd",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Get IP Reputation",
+              "description": null,
+              "arguments": {
+                "name": "Criminal IP",
+                "config": "''",
+                "params": [],
+                "version": "1.0.0",
+                "connector": "criminal-ip",
+                "operation": "get_ip_reputation",
+                "operationTitle": "Get IP Reputation"
+              },
+              "status": null,
+              "top": "120",
+              "left": "188",
+              "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+              "group": null,
+              "uuid": "b124af4d-4924-4ea0-b93a-87d1649d83c3"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "route": "3a269ed5-4738-423c-a7fe-34dd50388fc9",
+                "title": "Criminal IP: Get IP Reputation",
+                "resources": [
+                  "alerts"
+                ],
+                "inputVariables": [],
+                "step_variables": {
+                  "input": {
+                    "records": "{{vars.input.records[0]}}"
+                  }
+                },
+                "executeButtonText": "Execute",
+                "noRecordExecution": true,
+                "singleRecordExecution": false
+              },
+              "status": null,
+              "top": "20",
+              "left": "20",
+              "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+              "group": null,
+              "uuid": "a46dff6d-e0a8-4b05-9277-0005dc6c5ccd"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start-> Get IP Reputation",
+              "targetStep": "/api/3/workflow_steps/b124af4d-4924-4ea0-b93a-87d1649d83c3",
+              "sourceStep": "/api/3/workflow_steps/a46dff6d-e0a8-4b05-9277-0005dc6c5ccd",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "e5611ae1-0028-4522-9109-756bd1aacd20"
+            }
+          ],
+          "groups": [],
+          "priority": null,
+          "uuid": "79ee63cf-b361-4586-9ce7-d0a773906c18",
+          "id": 1968,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [],
+          "recordTags": [
+            "Criminal IP",
+            "criminal-ip"
+          ]
+        },
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Get URL Reputation",
+          "aliasName": null,
+          "tag": "#Criminal IP",
+          "description": "Uploads a URL to Criminal IP and retrieves the analysis results.",
+          "isActive": false,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [],
+          "synchronous": false,
+          "lastModifyDate": 1722511843,
+          "collection": "/api/3/workflow_collections/6e386fdd-c004-452e-af65-af89545eddc4",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/24980abd-20a1-4f4f-9075-277a6d1b5d83",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Get URL Reputation",
+              "description": null,
+              "arguments": {
+                "name": "Criminal IP",
+                "config": "''",
+                "params": [],
+                "version": "1.0.0",
+                "connector": "criminal-ip",
+                "operation": "get_url_reputation",
+                "operationTitle": "Get URL Reputation"
+              },
+              "status": null,
+              "top": "120",
+              "left": "188",
+              "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+              "group": null,
+              "uuid": "e0b53e1a-1e6f-491d-9a3c-bb2ac528fc55"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "route": "01e97f78-9aa4-4ab6-98d1-c162b906ee88",
+                "title": "Criminal IP: Get URL Reputation",
+                "resources": [
+                  "alerts"
+                ],
+                "inputVariables": [],
+                "step_variables": {
+                  "input": {
+                    "records": "{{vars.input.records[0]}}"
+                  }
+                },
+                "executeButtonText": "Execute",
+                "noRecordExecution": true,
+                "singleRecordExecution": false
+              },
+              "status": null,
+              "top": "20",
+              "left": "20",
+              "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+              "group": null,
+              "uuid": "24980abd-20a1-4f4f-9075-277a6d1b5d83"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start-> Get URL Reputation",
+              "targetStep": "/api/3/workflow_steps/e0b53e1a-1e6f-491d-9a3c-bb2ac528fc55",
+              "sourceStep": "/api/3/workflow_steps/24980abd-20a1-4f4f-9075-277a6d1b5d83",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "ffe016ff-79c9-4716-8fc5-2061c8596293"
+            }
+          ],
+          "groups": [],
+          "priority": null,
+          "uuid": "7c2998eb-0be8-4094-a34f-c2cd75a4a662",
+          "id": 1969,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [],
+          "recordTags": [
+            "Criminal IP",
+            "criminal-ip"
+          ]
+        },
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "URL > Criminal IP > Enrichment",
+          "aliasName": null,
+          "tag": "#Criminal IP",
+          "description": "Retrieve the reputation of indicator of type ‘URL’ using Criminal IP",
+          "isActive": true,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [
+            "indicator_value",
+            "style_colors"
+          ],
+          "synchronous": false,
+          "lastModifyDate": 1722530168,
+          "collection": "/api/3/workflow_collections/6e386fdd-c004-452e-af65-af89545eddc4",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/e8b2b80f-2868-494a-a97a-0f313d1b1be4",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Compute Enrichment Summary",
+              "description": null,
+              "arguments": {
+                "params": {
+                  "value": "<table class=\"no-border\">\n    <tr>\n        <th colspan=\"5\" class=\"no-background padding-0\">\n            <div class=\"font-size-11 ng-binding padding-bottom-sm\">\n                <h4 style=\"color: orange;\"\n                    class=\"body-default-bgcolor margin-bottom-0 padding-bottom-md padding-left-md padding-top-md text-align-left\">\n                    Criminal IP Detection Summary</h4>\n            </div>\n        </th>\n    </tr>\n    <tr class=\"solid-border\">\n        <td>\n            <div small class=\"control-label\">Malicious Confidence</div>\n            <div class=\"card-container-body margin-left-0\" style=\"width: 100px;\">\n                <div>{% if vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] == vars.malicious_score %}</div>\n                <div class=\"body-default-bgcolor card-number padding-left-md\"\n                    style=\"border-left: 5px solid {{vars.input.params.style_colors.Malicious}};padding: 11px;font-size: 18px !important;\">\n                    {{vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] | capitalize}}</div>\n                <div>{% elif vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] == vars.suspicious_score %}</div>\n                <div class=\"body-default-bgcolor card-number padding-left-md\"\n                    style=\"border-left: 5px solid {{vars.input.params.style_colors.Suspicious}};padding: 11px;font-size: 18px !important;\">\n                    {{vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] | capitalize}}</div>\n                <div>{% elif vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] == vars.good_score %}</div>\n                <div class=\"body-default-bgcolor card-number padding-left-md\"\n                    style=\"border-left: 5px solid {{vars.input.params.style_colors.Good}};padding: 11px;font-size: 18px !important;\">\n                    {{vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] | capitalize}}</div>\n                <div>{% else %}</div>\n                <div class=\"body-default-bgcolor card-number padding-left-md\"\n                    style=\"border-left: 5px solid {{vars.input.params.style_colors['No Reputation Available']}};padding: 11px;font-size: 18px !important;\">\n                    {{vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] | capitalize}}</div>\n                <div>{% endif %}</div>\n            </div>\n        </td>\n        <td>\n        <div small class=\"control-label\">Score Percentage</div>\n        <div class=\"card-container-body margin-left-0\" style=\"width: auto;\">\n            <div class=\"text-capitalize body-default-bgcolor card-number padding-left-md solid-border\"\n                style=\"padding: 13px;border-left-width: 1px;border-left-color: #dcdcdc;font-size: 15px !important;\">\n                {{vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score_percentage']}}</div>  \n        </div>\n        </td>\n    </tr>\n</table>\n\n"
+                },
+                "version": "3.2.5",
+                "connector": "cyops_utilities",
+                "operation": "format_richtext",
+                "operationTitle": "Utils: Format as RichText (Markdown)",
+                "step_variables": []
+              },
+              "status": null,
+              "top": "570",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+              "group": null,
+              "uuid": "6b5c78a7-ab3e-44fb-8234-e21d8f9f4f21"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Configuration",
+              "description": null,
+              "arguments": {
+                "good_score": "safe",
+                "useMockOutput": "{{globalVars.Demo_mode}}",
+                "indicator_value": "{{vars.input.params['indicator_value']}}",
+                "malicious_score": "critical",
+                "suspicious_score": "low"
+              },
+              "status": null,
+              "top": "160",
+              "left": "300",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "1d0f84fe-591c-48c8-8d9e-91311a7d2e74"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Get Reputation",
+              "description": null,
+              "arguments": {
+                "name": "Criminal IP",
+                "config": "47c38d97-8c43-4434-990f-412f13eaf612",
+                "params": {
+                  "query": "{{vars.input.params['indicator_value']}}"
+                },
+                "version": "1.0.0",
+                "connector": "criminal-ip",
+                "operation": "get_url_reputation",
+                "operationTitle": "Get URL Reputation",
+                "pickFromTenant": false,
+                "step_variables": []
+              },
+              "status": null,
+              "top": "300",
+              "left": "300",
+              "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+              "group": null,
+              "uuid": "a6aa7ec8-93bf-4fc9-8f75-33c91bb4f70d"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Is Reputation Found",
+              "description": null,
+              "arguments": {
+                "conditions": [
+                  {
+                    "option": "Yes",
+                    "step_iri": "/api/3/workflow_steps/6b5c78a7-ab3e-44fb-8234-e21d8f9f4f21",
+                    "condition": "{{ vars.steps.Get_Reputation.data.data | length > 0 }}",
+                    "step_name": "Copy of Compute Enrichment Summary"
+                  },
+                  {
+                    "option": "No",
+                    "default": true,
+                    "step_iri": "/api/3/workflow_steps/8b1a8ae4-5070-43f2-a1f1-76a769128060",
+                    "step_name": "Copy of No Operation"
+                  }
+                ],
+                "step_variables": []
+              },
+              "status": null,
+              "top": "440",
+              "left": "300",
+              "stepType": "/api/3/workflow_step_types/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+              "group": null,
+              "uuid": "9a1ff090-8860-4d94-8eff-50a3c566c655"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "No Operation",
+              "description": null,
+              "arguments": {
+                "params": [],
+                "version": "3.2.5",
+                "connector": "cyops_utilities",
+                "operation": "no_op",
+                "operationTitle": "Utils: No Operation",
+                "step_variables": []
+              },
+              "status": null,
+              "top": "570",
+              "left": "475",
+              "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+              "group": null,
+              "uuid": "8b1a8ae4-5070-43f2-a1f1-76a769128060"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Return Output Data",
+              "description": null,
+              "arguments": {
+                "verdict": "{% if vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] == vars.malicious_score %}{{\"Malicious\"}}{% elif vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] == vars.suspicious_score %}{{\"Suspicious\"}}{% elif vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] == vars.good_score %}{{\"Good\"}}{% else %}{{\"No Reputation Available\"}}{% endif %}",
+                "cti_name": "CiminalIP",
+                "cti_score": "{{vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score']}}",
+                "source_data": "{\"CriminalIP\": {{vars.steps.Get_Reputation.data.data}} }",
+                "enrichment_summary": "{{vars.steps.Compute_Enrichment_Summary.data['formatted_string']}}"
+              },
+              "status": null,
+              "top": "705",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "1dadfb1a-b157-45af-866c-bdb6c7dc357a"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "__triggerLimit": true,
+                "step_variables": {
+                  "input": {
+                    "params": []
+                  }
+                },
+                "triggerOnSource": true,
+                "triggerOnReplicate": false
+              },
+              "status": null,
+              "top": "30",
+              "left": "300",
+              "stepType": "/api/3/workflow_step_types/b348f017-9a94-471f-87f8-ce88b6a7ad62",
+              "group": null,
+              "uuid": "e8b2b80f-2868-494a-a97a-0f313d1b1be4"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Copy of Compute Enrichment Summary -> Copy of Return Output Data",
+              "targetStep": "/api/3/workflow_steps/1dadfb1a-b157-45af-866c-bdb6c7dc357a",
+              "sourceStep": "/api/3/workflow_steps/6b5c78a7-ab3e-44fb-8234-e21d8f9f4f21",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c8610731-bb71-4c03-bc5e-9e0c560bf3a4"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Copy of Configuration -> Copy of Get Reputation",
+              "targetStep": "/api/3/workflow_steps/a6aa7ec8-93bf-4fc9-8f75-33c91bb4f70d",
+              "sourceStep": "/api/3/workflow_steps/1d0f84fe-591c-48c8-8d9e-91311a7d2e74",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "deeeeaf0-a074-4b39-a531-df1b4b11e387"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Copy of Get Reputation -> Copy of Is Reputation Found",
+              "targetStep": "/api/3/workflow_steps/9a1ff090-8860-4d94-8eff-50a3c566c655",
+              "sourceStep": "/api/3/workflow_steps/a6aa7ec8-93bf-4fc9-8f75-33c91bb4f70d",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "b433407a-f980-4bc5-a7c2-0aabf2abcc97"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Copy of Is Reputation Found -> Copy of Compute Enrichment Summary",
+              "targetStep": "/api/3/workflow_steps/6b5c78a7-ab3e-44fb-8234-e21d8f9f4f21",
+              "sourceStep": "/api/3/workflow_steps/9a1ff090-8860-4d94-8eff-50a3c566c655",
+              "label": "Yes",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "ab84600e-4a13-4edc-af90-97ea61bcd006"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Copy of Is Reputation Found -> Copy of No Operation",
+              "targetStep": "/api/3/workflow_steps/8b1a8ae4-5070-43f2-a1f1-76a769128060",
+              "sourceStep": "/api/3/workflow_steps/9a1ff090-8860-4d94-8eff-50a3c566c655",
+              "label": "No",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "544c40d2-dee3-4468-9c46-7bd47bbacd82"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Copy of Configuration",
+              "targetStep": "/api/3/workflow_steps/1d0f84fe-591c-48c8-8d9e-91311a7d2e74",
+              "sourceStep": "/api/3/workflow_steps/e8b2b80f-2868-494a-a97a-0f313d1b1be4",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "9f528d7b-dade-45a9-a78e-d1c64c56ee49"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "uuid": "84d35b7b-0157-4eb1-86e7-fe29070ec99b",
+          "id": 1970,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [],
+          "recordTags": [
+            "URL_Enrichment",
+            "Criminal IP",
+            "criminal-ip"
+          ]
+        },
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Domain > Criminal IP > Enrichment",
+          "aliasName": null,
+          "tag": "#Criminal IP",
+          "description": "Retrieve the reputation of indicator of type ‘Domain’ using Criminal IP",
+          "isActive": true,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [
+            "indicator_value",
+            "style_colors"
+          ],
+          "synchronous": false,
+          "lastModifyDate": 1722530041,
+          "collection": "/api/3/workflow_collections/6e386fdd-c004-452e-af65-af89545eddc4",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/2ddbc33c-b601-4ad0-b12d-533440dc87c4",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Compute Enrichment Summary",
+              "description": null,
+              "arguments": {
+                "params": {
+                  "value": "<table class=\"no-border\">\n    <tr>\n        <th colspan=\"5\" class=\"no-background padding-0\">\n            <div class=\"font-size-11 ng-binding padding-bottom-sm\">\n                <h4 style=\"color: orange;\"\n                    class=\"body-default-bgcolor margin-bottom-0 padding-bottom-md padding-left-md padding-top-md text-align-left\">\n                    Criminal IP Detection Summary</h4>\n            </div>\n        </th>\n    </tr>\n    <tr class=\"solid-border\">\n        <td>\n            <div small class=\"control-label\">Malicious Confidence</div>\n            <div class=\"card-container-body margin-left-0\" style=\"width: 100px;\">\n                <div>{% if vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] == vars.malicious_score %}</div>\n                <div class=\"body-default-bgcolor card-number padding-left-md\"\n                    style=\"border-left: 5px solid {{vars.input.params.style_colors.Malicious}};padding: 11px;font-size: 18px !important;\">\n                    {{vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] | capitalize}}</div>\n                <div>{% elif vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] == vars.suspicious_score %}</div>\n                <div class=\"body-default-bgcolor card-number padding-left-md\"\n                    style=\"border-left: 5px solid {{vars.input.params.style_colors.Suspicious}};padding: 11px;font-size: 18px !important;\">\n                    {{vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] | capitalize}}</div>\n                <div>{% elif vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] == vars.good_score %}</div>\n                <div class=\"body-default-bgcolor card-number padding-left-md\"\n                    style=\"border-left: 5px solid {{vars.input.params.style_colors.Good}};padding: 11px;font-size: 18px !important;\">\n                    {{vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] | capitalize}}</div>\n                <div>{% else %}</div>\n                <div class=\"body-default-bgcolor card-number padding-left-md\"\n                    style=\"border-left: 5px solid {{vars.input.params.style_colors['No Reputation Available']}};padding: 11px;font-size: 18px !important;\">\n                    {{vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] | capitalize}}</div>\n                <div>{% endif %}</div>\n            </div>\n        </td>\n        <td>\n        <div small class=\"control-label\">Score Percentage</div>\n        <div class=\"card-container-body margin-left-0\" style=\"width: auto;\">\n            <div class=\"text-capitalize body-default-bgcolor card-number padding-left-md solid-border\"\n                style=\"padding: 13px;border-left-width: 1px;border-left-color: #dcdcdc;font-size: 15px !important;\">\n                {{vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score_percentage']}}</div>  \n        </div>\n        </td>\n    </tr>\n</table>\n\n"
+                },
+                "version": "3.2.5",
+                "connector": "cyops_utilities",
+                "operation": "format_richtext",
+                "operationTitle": "Utils: Format as RichText (Markdown)",
+                "step_variables": []
+              },
+              "status": null,
+              "top": "560",
+              "left": "480",
+              "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+              "group": null,
+              "uuid": "0295e11e-08d1-457b-b351-66bf91b7580c"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Configuration",
+              "description": null,
+              "arguments": {
+                "good_score": "safe",
+                "useMockOutput": "{{globalVars.Demo_mode}}",
+                "indicator_value": "{{vars.input.params['indicator_value']}}",
+                "malicious_score": "critical",
+                "suspicious_score": "low"
+              },
+              "status": null,
+              "top": "160",
+              "left": "300",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "64f57501-a63d-4cde-8ed7-4b1883af4e07"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Get Reputation",
+              "description": null,
+              "arguments": {
+                "name": "Criminal IP",
+                "config": "47c38d97-8c43-4434-990f-412f13eaf612",
+                "params": {
+                  "query": "{{vars.input.params['indicator_value']}}"
+                },
+                "version": "1.0.0",
+                "connector": "criminal-ip",
+                "operation": "get_domain_reputation",
+                "operationTitle": "Get Domain Reputation",
+                "pickFromTenant": false,
+                "step_variables": []
+              },
+              "status": null,
+              "top": "300",
+              "left": "300",
+              "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+              "group": null,
+              "uuid": "683cbade-4fdf-4ab7-9da9-7ea61a02951c"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Is Reputation Found",
+              "description": null,
+              "arguments": {
+                "conditions": [
+                  {
+                    "option": "Yes",
+                    "step_iri": "/api/3/workflow_steps/0295e11e-08d1-457b-b351-66bf91b7580c",
+                    "condition": "{{ vars.steps.Get_Reputation.data.data | length > 0 }}",
+                    "step_name": "Compute Enrichment Summary"
+                  },
+                  {
+                    "option": "No",
+                    "default": true,
+                    "step_iri": "/api/3/workflow_steps/f9d327dc-ef36-4cbb-ac74-02319c6ab9c4",
+                    "step_name": "No Operation"
+                  }
+                ],
+                "step_variables": []
+              },
+              "status": null,
+              "top": "440",
+              "left": "300",
+              "stepType": "/api/3/workflow_step_types/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+              "group": null,
+              "uuid": "51da02ac-d28f-4b30-9b81-b231225ea310"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "No Operation",
+              "description": null,
+              "arguments": {
+                "params": [],
+                "version": "3.2.3",
+                "connector": "cyops_utilities",
+                "operation": "no_op",
+                "operationTitle": "Utils: No Operation",
+                "step_variables": []
+              },
+              "status": null,
+              "top": "560",
+              "left": "120",
+              "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+              "group": null,
+              "uuid": "f9d327dc-ef36-4cbb-ac74-02319c6ab9c4"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Return Output Data",
+              "description": null,
+              "arguments": {
+                "verdict": "{% if vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] == vars.malicious_score %}{{\"Malicious\"}}{% elif vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] == vars.suspicious_score %}{{\"Suspicious\"}}{% elif vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score'] == vars.good_score %}{{\"Good\"}}{% else %}{{\"No Reputation Available\"}}{% endif %}",
+                "cti_name": "CiminalIP",
+                "cti_score": "{{vars.steps.Get_Reputation.data.data.main_domain_info.domain_score['score']}}",
+                "source_data": "{\"CriminalIP\": {{vars.steps.Get_Reputation.data.data}} }",
+                "enrichment_summary": "{{vars.steps.Compute_Enrichment_Summary.data['formatted_string']}}"
+              },
+              "status": null,
+              "top": "700",
+              "left": "480",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "31f14c6d-1e3a-4ca6-ab68-3e9d183a0a37"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "step_variables": {
+                  "input": {
+                    "params": []
+                  }
+                }
+              },
+              "status": null,
+              "top": "20",
+              "left": "300",
+              "stepType": "/api/3/workflow_step_types/b348f017-9a94-471f-87f8-ce88b6a7ad62",
+              "group": null,
+              "uuid": "2ddbc33c-b601-4ad0-b12d-533440dc87c4"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Compute Enrichment Summary -> Return Output Data",
+              "targetStep": "/api/3/workflow_steps/31f14c6d-1e3a-4ca6-ab68-3e9d183a0a37",
+              "sourceStep": "/api/3/workflow_steps/0295e11e-08d1-457b-b351-66bf91b7580c",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c49b5312-16f5-415d-a477-0bfd1d993e2e"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Configuration -> Get Domain Reputation",
+              "targetStep": "/api/3/workflow_steps/683cbade-4fdf-4ab7-9da9-7ea61a02951c",
+              "sourceStep": "/api/3/workflow_steps/64f57501-a63d-4cde-8ed7-4b1883af4e07",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "3451a5f9-f6d2-4f75-b61d-08578c48ba64"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Get Domain Reputation -> Is Reputation Found",
+              "targetStep": "/api/3/workflow_steps/51da02ac-d28f-4b30-9b81-b231225ea310",
+              "sourceStep": "/api/3/workflow_steps/683cbade-4fdf-4ab7-9da9-7ea61a02951c",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "efbf0264-23e6-49c8-9190-6b85a6f27e1e"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Is Reputation Found -> Compute Enrichment Summary",
+              "targetStep": "/api/3/workflow_steps/0295e11e-08d1-457b-b351-66bf91b7580c",
+              "sourceStep": "/api/3/workflow_steps/51da02ac-d28f-4b30-9b81-b231225ea310",
+              "label": "Yes",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "a1d6603c-7496-4196-a313-8a7b8d9f0f2b"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Is Reputation Found -> No Operation",
+              "targetStep": "/api/3/workflow_steps/f9d327dc-ef36-4cbb-ac74-02319c6ab9c4",
+              "sourceStep": "/api/3/workflow_steps/51da02ac-d28f-4b30-9b81-b231225ea310",
+              "label": "No",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c5a49133-85ad-4cdb-b0a8-5c900a50904e"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Configuration",
+              "targetStep": "/api/3/workflow_steps/64f57501-a63d-4cde-8ed7-4b1883af4e07",
+              "sourceStep": "/api/3/workflow_steps/2ddbc33c-b601-4ad0-b12d-533440dc87c4",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "4cdb5878-5bb8-491b-a165-1cf24483d44b"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "uuid": "c778f0aa-8eb9-4f16-83dd-667e1233a6e1",
+          "id": 1971,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [],
+          "recordTags": [
+            "Domain_Enrichment",
+            "Criminal IP",
+            "criminal-ip"
+          ]
+        },
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Get Domain Reputation",
+          "aliasName": null,
+          "tag": "#Criminal IP",
+          "description": "Uploads a domain to Criminal IP and retrieves the analysis results.",
+          "isActive": false,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [],
+          "synchronous": false,
+          "lastModifyDate": 1722529544,
+          "collection": "/api/3/workflow_collections/6e386fdd-c004-452e-af65-af89545eddc4",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/c7fd6176-ebeb-4fb4-a513-4c50ec79cb12",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Get Domain Reputation",
+              "description": null,
+              "arguments": {
+                "name": "Criminal IP",
+                "config": "47c38d97-8c43-4434-990f-412f13eaf612",
+                "params": {
+                  "query": "landqekjbdhjqwjbgd2iu"
+                },
+                "version": "1.0.0",
+                "connector": "criminal-ip",
+                "operation": "get_domain_reputation",
+                "operationTitle": "Get Domain Reputation",
+                "step_variables": []
+              },
+              "status": null,
+              "top": "120",
+              "left": "180",
+              "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+              "group": null,
+              "uuid": "29d8e723-ceea-4076-ba64-03082546446c"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "route": "27503051-7422-4479-9bcc-f2059c16df32",
+                "title": "Criminal IP: Get Domain Reputation",
+                "resources": [
+                  "alerts"
+                ],
+                "inputVariables": [],
+                "step_variables": {
+                  "input": {
+                    "records": "{{vars.input.records[0]}}"
+                  }
+                },
+                "executeButtonText": "Execute",
+                "noRecordExecution": true,
+                "singleRecordExecution": false
+              },
+              "status": null,
+              "top": "20",
+              "left": "20",
+              "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+              "group": null,
+              "uuid": "c7fd6176-ebeb-4fb4-a513-4c50ec79cb12"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start-> Get Domain Reputation",
+              "targetStep": "/api/3/workflow_steps/29d8e723-ceea-4076-ba64-03082546446c",
+              "sourceStep": "/api/3/workflow_steps/c7fd6176-ebeb-4fb4-a513-4c50ec79cb12",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "75bafd5e-7809-4c8e-9287-2359f211362e"
+            }
+          ],
+          "groups": [],
+          "priority": null,
+          "uuid": "eb287d3e-24b2-4d0c-9f8d-9ea232054137",
+          "id": 1972,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [],
+          "recordTags": [
+            "Criminal IP",
+            "criminal-ip"
+          ]
+        }
+      ]
+    }
+  ],
+  "macros": [
+    {
+      "name": "Demo_mode",
+      "value": "false",
+      "default_value": "false"
+    }
+  ],
+  "exported_tags": [
+    "Criminal IP",
+    "criminal-ip",
+    "IP_Enrichment",
+    "URL_Enrichment",
+    "Domain_Enrichment"
+  ]
+}
