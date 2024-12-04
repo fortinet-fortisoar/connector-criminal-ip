@@ -74,15 +74,22 @@ def get_domain_reputation(config, params):
 
 
 def get_scan_status(scan_id, config):
+    retries = 0
+    max_retries = 10
+    retry_delay = 15
     endpoint = f"/v1/domain/status/{scan_id}"
+    time.sleep(15)
     response = make_api_call(method='GET', endpoint=endpoint, config=config)
     scan_percentage = response.get('data', {}).get('scan_percentage')
     if scan_percentage == -1:
         raise ConnectorError('A connection error occurred')
     if scan_percentage == -2:
         raise ConnectorError('Domain does not exist')
-    while scan_percentage != 100:
-        time.sleep(15)
+    while scan_percentage != 100 and retries < max_retries:
+        if retries == 9:
+            raise ConnectorError('Failed to get the data from Criminal IP')
+        retries += 1
+        time.sleep(retry_delay)
         response = make_api_call(method='GET', endpoint=endpoint, config=config)
         scan_percentage = response.get('data', {}).get('scan_percentage')
 

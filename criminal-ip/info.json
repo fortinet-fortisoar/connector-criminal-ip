@@ -4,12 +4,12 @@
   "version": "1.0.0",
   "description": "Criminal IP provides cyber threat intelligence search engine through which you can scan IP, domain, urls.",
   "publisher": "Fortinet",
-  "cs_approved": true,
+  "cs_approved": false,
   "cs_compatible": true,
   "category": "Threat Intelligence",
   "icon_small_name": "small.png",
   "icon_large_name": "large.png",
-  "help_online": "",
+  "help_online": "https://github.com/fortinet-fortisoar/connector-criminal-ip/blob/release/1.0.0/docs/CriminalIPConnectorDoc.md",
   "configuration": {
     "fields": [
       {
